@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Megiston Study</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="topbar">
+  <h1>Megiston Study</h1>
+  <div id="stats">Score: 0 | Streak: 0</div>
+</header>
+
+<main class="container">
+
+  <section class="study">
+    <div id="card" class="card">Loading...</div>
+
+    <input id="answer" placeholder="Type your answer">
+
+    <div class="buttons">
+      <button onclick="submitAnswer()">Submit</button>
+      <button onclick="nextCard()">Next</button>
+    </div>
+
+    <p id="feedback"></p>
+  </section>
+
+  <aside class="sidebar">
+    <h2>Study Bot</h2>
+    <div id="chatLog" class="chatLog"></div>
+    <input id="chatInput" placeholder="Ask something...">
+    <button onclick="sendChat()">Send</button>
+  </aside>
+
+</main>
+
+<script src="app.js"></script>
+</body>
+</html>
