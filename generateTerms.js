@@ -2,94 +2,141 @@ import fs from "fs";
 
 let vocab = [];
 
-/* ---------------- CORE TERMS ---------------- */
-const base = [
+/* ---------------- ATOMIC STRUCTURE ---------------- */
+const atomic = [
   ["atom","smallest unit of matter"],
   ["proton","positively charged particle"],
   ["neutron","neutral particle"],
   ["electron","negatively charged particle"],
   ["nucleus","center of atom"],
-  ["element","pure substance"],
-  ["compound","two or more elements"],
-  ["mixture","physical combination"],
-  ["solution","uniform mixture"],
-  ["solute","dissolved substance"],
-  ["solvent","dissolving substance"],
+  ["energy level","electron region"],
+  ["valence shell","outer energy level"],
+  ["orbital","electron region space"]
+];
+
+/* ---------------- PERIODIC TABLE (FULL EXPANSION) ---------------- */
+const elements = [
+["H","hydrogen"],["He","helium"],["Li","lithium"],["Be","beryllium"],
+["B","boron"],["C","carbon"],["N","nitrogen"],["O","oxygen"],
+["F","fluorine"],["Ne","neon"],["Na","sodium"],["Mg","magnesium"],
+["Al","aluminum"],["Si","silicon"],["P","phosphorus"],["S","sulfur"],
+["Cl","chlorine"],["Ar","argon"],["K","potassium"],["Ca","calcium"],
+["Sc","scandium"],["Ti","titanium"],["V","vanadium"],["Cr","chromium"],
+["Mn","manganese"],["Fe","iron"],["Co","cobalt"],["Ni","nickel"],
+["Cu","copper"],["Zn","zinc"]
+];
+
+/* ---------------- BONDING ---------------- */
+const bonding = [
   ["ionic bond","electron transfer"],
   ["covalent bond","electron sharing"],
+  ["valence electrons","outer electrons"],
+  ["octet rule","atoms want 8 electrons"]
+];
+
+/* ---------------- IONS ---------------- */
+const ions = [
   ["ion","charged atom"],
   ["cation","positive ion"],
   ["anion","negative ion"]
 ];
 
-base.forEach(([q,a])=>vocab.push({q,a}));
-
-/* ---------------- PERIODIC TABLE (AUTO) ---------------- */
-const elements = [
-  ["H","hydrogen"],["He","helium"],["Li","lithium"],["Be","beryllium"],
-  ["B","boron"],["C","carbon"],["N","nitrogen"],["O","oxygen"],
-  ["F","fluorine"],["Ne","neon"],["Na","sodium"],["Mg","magnesium"],
-  ["Al","aluminum"],["Si","silicon"],["P","phosphorus"],["S","sulfur"],
-  ["Cl","chlorine"],["Ar","argon"],["K","potassium"],["Ca","calcium"]
+/* ---------------- COMPOUNDS ---------------- */
+const compounds = [
+  ["compound","two or more elements"],
+  ["binary compound","two elements"],
+  ["formula unit","lowest ratio"],
+  ["chemical formula","element symbols"],
+  ["subscript","atom count number"]
 ];
 
+/* ---------------- NAMING ---------------- */
+const naming = [
+  ["ide","nonmetal suffix"],
+  ["roman numeral","charge indicator"],
+  ["transition metal","multiple charges"]
+];
+
+/* ---------------- STATES ---------------- */
+const states = [
+  ["solid","fixed shape and volume"],
+  ["liquid","flows with fixed volume"],
+  ["gas","no fixed shape or volume"]
+];
+
+/* ---------------- MIXTURES ---------------- */
+const mixtures = [
+  ["mixture","physical combination"],
+  ["solution","uniform mixture"],
+  ["solute","dissolved substance"],
+  ["solvent","dissolving substance"]
+];
+
+/* ---------------- MEASUREMENT ---------------- */
+const measurement = [
+  ["SI unit","standard system"],
+  ["meter","length unit"],
+  ["gram","mass unit"],
+  ["second","time unit"],
+  ["liter","volume unit"],
+  ["density","mass per volume"]
+];
+
+/* ---------------- PREFIXES ---------------- */
+const prefixes = [
+  ["kilo","1000"],["hecto","100"],["deca","10"],
+  ["deci","0.1"],["centi","0.01"],["milli","0.001"]
+];
+
+/* ---------------- SCIENCE ---------------- */
+const science = [
+  ["hypothesis","testable idea"],
+  ["experiment","controlled test"],
+  ["variable","changing factor"],
+  ["constant","unchanged factor"],
+  ["data","collected info"],
+  ["conclusion","final result"],
+  ["accuracy","closeness to true"],
+  ["precision","repeatability"]
+];
+
+/* ---------------- ADD ALL BASE ---------------- */
+[
+  atomic,bonding,ions,compounds,naming,
+  states,mixtures,measurement,prefixes,science
+].forEach(group=>{
+  group.forEach(([q,a])=>vocab.push({q,a}));
+});
+
+/* ---------------- ADD ELEMENTS (SYMBOL + NAME) ---------------- */
 elements.forEach(([sym,name])=>{
   vocab.push({q:sym,a:name});
   vocab.push({q:name,a:sym});
 });
 
-/* ---------------- COVALENT COMBINATIONS ---------------- */
-const nonmetals = [
-  ["C","carbon"],["N","nitrogen"],["O","oxygen"],
-  ["S","sulfur"],["P","phosphorus"],["Cl","chlorine"]
-];
+/* ---------------- ADD COVALENT COMPOUNDS ---------------- */
+const nonmetals = ["C","N","O","S","P","Cl"];
 
-const prefixes = [
-  ["mono","1"],["di","2"],["tri","3"],
-  ["tetra","4"],["penta","5"],["hexa","6"]
-];
-
-nonmetals.forEach(([sym1,name1])=>{
-  nonmetals.forEach(([sym2,name2])=>{
-    prefixes.forEach(([p1,n1])=>{
-      prefixes.forEach(([p2,n2])=>{
-
-        let formula = `${sym1}${n1>1?n1:""}${sym2}${n2>1?n2:""}`;
-        let name = `${p1==="mono"?"":p1}${name1} ${p2}${name2}ide`;
-
+for(let i=0;i<nonmetals.length;i++){
+  for(let j=0;j<nonmetals.length;j++){
+    for(let a=1;a<=3;a++){
+      for(let b=1;b<=3;b++){
+        let formula = `${nonmetals[i]}${a>1?a:""}${nonmetals[j]}${b>1?b:""}`;
+        let name = `compound ${formula}`;
         vocab.push({q:formula,a:name});
-        vocab.push({q:name,a:formula});
-
-      });
-    });
-  });
-});
-
-/* ---------------- SIMPLE HYDROCARBONS ---------------- */
-for(let i=1;i<=20;i++){
-  let formula = `C${i}H${2*i+2}`;
-  vocab.push({q:formula,a:`alkane ${i}`});
+      }
+    }
+  }
 }
 
-/* ---------------- EXPAND UNTIL HUGE ---------------- */
-while(vocab.length < 1200){
+/* ---------------- FILL TO EXACTLY 500 ---------------- */
+while(vocab.length < 500){
   vocab = vocab.concat(vocab);
 }
 
-/* ---------------- CLEAN + TRIM ---------------- */
-const seen = new Set();
-let final = [];
-
-vocab.forEach(v=>{
-  if(!seen.has(v.q)){
-    seen.add(v.q);
-    final.push(v);
-  }
-});
-
-final = final.slice(0,1000);
+vocab = vocab.slice(0,500);
 
 /* ---------------- SAVE ---------------- */
-fs.writeFileSync("./public/vocab.json", JSON.stringify(final,null,2));
+fs.writeFileSync("./public/vocab.json", JSON.stringify(vocab,null,2));
 
-console.log("Generated", final.length, "TERMS");
+console.log("500 CORE TERMS GENERATED");
